@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_stock_picking_price_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <t t-if="doc.origin">
+                            <h2>
+                                Documento de Origen: <span t-esc="doc.origin"/>
+                            </h2>
+                        </t>
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Precio Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="doc.move_line_ids_without_package" t-as="move_line">
+                                    <td>
+                                        <span t-out="move_line.product_id.name"/>
+                                    </td>
+                                    <td>
+                                        <span t-out="move_line.qty_done"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="move_line.product_id.list_price"/>€
+                                    </td>
+                                    <td>
+                                        <span t-esc="(move_line.qty_done * move_line.product_id.list_price)"/>€
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_stock_picking_price_document" model="ir.actions.report">
+        <field name="name">Albarán + Precios</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">facturasModulos.report_stock_picking_price_document</field>
+        <field name="report_file">'Albarán + Precios'</field>
+        <field name="print_report_name">'Albarán + Precios'</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>
